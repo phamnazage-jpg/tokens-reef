@@ -219,7 +219,7 @@ type ModelError struct {
 
 func (e *ModelError) Error() string {
 	if len(e.Args) > 0 {
-		return e.Message + ": " + fmt.Sprint(e.Args...)
+		return fmt.Sprintf(e.Message, e.Args...)
 	}
 	return e.Message
 }

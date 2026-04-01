@@ -113,3 +113,14 @@ func ClientClosed(reason, message string) *ApplicationError {
 func IsClientClosed(err error) bool {
 	return Code(err) == 499
 }
+
+// NotImplemented new NotImplemented error that is mapped to an HTTP 501 response.
+func NotImplemented(reason, message string) *ApplicationError {
+	return New(http.StatusNotImplemented, reason, message)
+}
+
+// IsNotImplemented determines if err is an error which indicates a NotImplemented error.
+// It supports wrapped errors.
+func IsNotImplemented(err error) bool {
+	return Code(err) == http.StatusNotImplemented
+}

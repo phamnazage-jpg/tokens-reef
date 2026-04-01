@@ -151,6 +151,8 @@ func (s *PromoService) ApplyPromoCode(ctx context.Context, userID int64, code st
 	s.invalidatePromoCaches(ctx, userID, promoCode.BonusAmount)
 
 	// 失效余额缓存
+	// Note: 使用 context.Background() 使缓存失效操作独立于请求生命周期
+	// 即使请求取消也确保缓存被清理，5秒超时防止goroutine泄漏
 	if s.billingCacheService != nil {
 		go func() {
 			cacheCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

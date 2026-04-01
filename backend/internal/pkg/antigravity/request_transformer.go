@@ -15,6 +15,8 @@ import (
 	"github.com/google/uuid"
 )
 
+// sessionRand 用于生成回退时的随机 session ID
+// 注意：主要使用确定性方法（基于消息内容哈希），仅在无法提取消息时使用随机
 var (
 	sessionRand      = rand.New(rand.NewSource(time.Now().UnixNano()))
 	sessionRandMutex sync.Mutex

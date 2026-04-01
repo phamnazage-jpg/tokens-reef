@@ -2258,7 +2258,8 @@ func TestProcessGeneration_SelectAccountError(t *testing.T) {
 }
 
 func TestProcessGeneration_SoraGatewayServiceNil(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora processGeneration 集成测试，待流程稳定后恢复")
+	// TODO: Re-enable after Sora process generation is stable
+	// t.Skip("TODO: 临时屏蔽 Sora processGeneration 集成测试，待流程稳定后恢复")
 	repo := newStubSoraGenRepo()
 	repo.gens[1] = &service.SoraGeneration{ID: 1, UserID: 1, Status: "pending"}
 	genService := service.NewSoraGenerationService(repo, nil, nil)
@@ -2278,7 +2279,8 @@ func TestProcessGeneration_SoraGatewayServiceNil(t *testing.T) {
 }
 
 func TestProcessGeneration_ForwardError(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora processGeneration 集成测试，待流程稳定后恢复")
+	// TODO: Re-enable after Sora process generation is stable
+	// t.Skip("TODO: 临时屏蔽 Sora processGeneration 集成测试，待流程稳定后恢复")
 	repo := newStubSoraGenRepo()
 	repo.gens[1] = &service.SoraGeneration{ID: 1, UserID: 1, Status: "pending"}
 	genService := service.NewSoraGenerationService(repo, nil, nil)
@@ -2337,7 +2339,8 @@ func TestProcessGeneration_ForwardErrorCancelled(t *testing.T) {
 }
 
 func TestProcessGeneration_ForwardSuccessNoMediaURL(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora processGeneration 集成测试，待流程稳定后恢复")
+	// TODO: Re-enable after Sora process generation is stable
+	// t.Skip("TODO: 临时屏蔽 Sora processGeneration 集成测试，待流程稳定后恢复")
 	repo := newStubSoraGenRepo()
 	repo.gens[1] = &service.SoraGeneration{ID: 1, UserID: 1, Status: "pending"}
 	genService := service.NewSoraGenerationService(repo, nil, nil)
@@ -2399,7 +2402,8 @@ func TestProcessGeneration_ForwardSuccessCancelledBeforeStore(t *testing.T) {
 }
 
 func TestProcessGeneration_FullSuccessUpstream(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora processGeneration 集成测试，待流程稳定后恢复")
+	// TODO: Re-enable after Sora process generation is stable
+	// t.Skip("TODO: 临时屏蔽 Sora processGeneration 集成测试，待流程稳定后恢复")
 	repo := newStubSoraGenRepo()
 	repo.gens[1] = &service.SoraGeneration{ID: 1, UserID: 1, Status: "pending"}
 	genService := service.NewSoraGenerationService(repo, nil, nil)
@@ -2430,7 +2434,8 @@ func TestProcessGeneration_FullSuccessUpstream(t *testing.T) {
 }
 
 func TestProcessGeneration_FullSuccessWithS3(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora processGeneration 集成测试，待流程稳定后恢复")
+	// TODO: Re-enable after Sora process generation is stable
+	// t.Skip("TODO: 临时屏蔽 Sora processGeneration 集成测试，待流程稳定后恢复")
 	sourceServer := newFakeSourceServer()
 	defer sourceServer.Close()
 	fakeS3 := newFakeS3Server("ok")
@@ -2478,7 +2483,8 @@ func TestProcessGeneration_FullSuccessWithS3(t *testing.T) {
 }
 
 func TestProcessGeneration_MarkCompletedFails(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora processGeneration 集成测试，待流程稳定后恢复")
+	// TODO: Re-enable after Sora process generation is stable
+	// t.Skip("TODO: 临时屏蔽 Sora processGeneration 集成测试，待流程稳定后恢复")
 	repo := newStubSoraGenRepo()
 	repo.gens[1] = &service.SoraGeneration{ID: 1, UserID: 1, Status: "pending"}
 	// 第 1 次 Update（MarkGenerating）成功，第 2 次（MarkCompleted）失败
@@ -2646,7 +2652,8 @@ func TestDeleteGeneration_DeleteError(t *testing.T) {
 // ==================== fetchUpstreamModels 测试 ====================
 
 func TestFetchUpstreamModels_NilGateway(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
+	// TODO: Re-enable after Sora upstream model sync is stable
+	// t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
 	h := &SoraClientHandler{}
 	_, err := h.fetchUpstreamModels(context.Background())
 	require.Error(t, err)
@@ -2654,7 +2661,8 @@ func TestFetchUpstreamModels_NilGateway(t *testing.T) {
 }
 
 func TestFetchUpstreamModels_NoAccounts(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
+	// TODO: Re-enable after Sora upstream model sync is stable
+	// t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
 	accountRepo := &stubAccountRepoForHandler{accounts: nil}
 	gatewayService := newMinimalGatewayService(accountRepo)
 	h := &SoraClientHandler{gatewayService: gatewayService}
@@ -2664,7 +2672,8 @@ func TestFetchUpstreamModels_NoAccounts(t *testing.T) {
 }
 
 func TestFetchUpstreamModels_NonAPIKeyAccount(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
+	// TODO: Re-enable after Sora upstream model sync is stable
+	// t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
 	accountRepo := &stubAccountRepoForHandler{
 		accounts: []service.Account{
 			{ID: 1, Type: "oauth", Platform: service.PlatformSora, Status: service.StatusActive, Schedulable: true},
@@ -2678,7 +2687,8 @@ func TestFetchUpstreamModels_NonAPIKeyAccount(t *testing.T) {
 }
 
 func TestFetchUpstreamModels_MissingAPIKey(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
+	// TODO: Re-enable after Sora upstream model sync is stable
+	// t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
 	accountRepo := &stubAccountRepoForHandler{
 		accounts: []service.Account{
 			{ID: 1, Type: service.AccountTypeAPIKey, Platform: service.PlatformSora, Status: service.StatusActive, Schedulable: true,
@@ -2693,7 +2703,8 @@ func TestFetchUpstreamModels_MissingAPIKey(t *testing.T) {
 }
 
 func TestFetchUpstreamModels_MissingBaseURL_FallsBackToDefault(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
+	// TODO: Re-enable after Sora upstream model sync is stable
+	// t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
 	// GetBaseURL() 在缺少 base_url 时返回默认值 "https://api.anthropic.com"
 	// 因此不会触发 "账号缺少 base_url" 错误，而是会尝试请求默认 URL 并失败
 	accountRepo := &stubAccountRepoForHandler{
@@ -2709,7 +2720,8 @@ func TestFetchUpstreamModels_MissingBaseURL_FallsBackToDefault(t *testing.T) {
 }
 
 func TestFetchUpstreamModels_UpstreamReturns500(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
+	// TODO: Re-enable after Sora upstream model sync is stable
+	// t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}))
@@ -2729,7 +2741,8 @@ func TestFetchUpstreamModels_UpstreamReturns500(t *testing.T) {
 }
 
 func TestFetchUpstreamModels_UpstreamReturnsInvalidJSON(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
+	// TODO: Re-enable after Sora upstream model sync is stable
+	// t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("not json"))
@@ -2750,7 +2763,8 @@ func TestFetchUpstreamModels_UpstreamReturnsInvalidJSON(t *testing.T) {
 }
 
 func TestFetchUpstreamModels_UpstreamReturnsEmptyList(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
+	// TODO: Re-enable after Sora upstream model sync is stable
+	// t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"data":[]}`))
@@ -2771,7 +2785,8 @@ func TestFetchUpstreamModels_UpstreamReturnsEmptyList(t *testing.T) {
 }
 
 func TestFetchUpstreamModels_Success(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
+	// TODO: Re-enable after Sora upstream model sync is stable
+	// t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// 验证请求头
 		require.Equal(t, "Bearer sk-test", r.Header.Get("Authorization"))
@@ -2795,7 +2810,8 @@ func TestFetchUpstreamModels_Success(t *testing.T) {
 }
 
 func TestFetchUpstreamModels_UnrecognizedModels(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
+	// TODO: Re-enable after Sora upstream model sync is stable
+	// t.Skip("TODO: 临时屏蔽 Sora 上游模型同步相关测试，待账号选择逻辑稳定后恢复")
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"data":[{"id":"unknown-model-1"},{"id":"unknown-model-2"}]}`))
@@ -2830,7 +2846,8 @@ func TestGetModelFamilies_CachesLocalConfig(t *testing.T) {
 }
 
 func TestGetModelFamilies_CachesUpstreamResult(t *testing.T) {
-	t.Skip("TODO: 临时屏蔽依赖 Sora 上游模型同步的缓存测试，待账号选择逻辑稳定后恢复")
+	// TODO: Re-enable after Sora upstream model sync is stable
+	// t.Skip("TODO: 临时屏蔽依赖 Sora 上游模型同步的缓存测试，待账号选择逻辑稳定后恢复")
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"data":[{"id":"sora2-landscape-10s"},{"id":"gpt-image"}]}`))

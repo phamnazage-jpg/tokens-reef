@@ -124,8 +124,9 @@ type UpdateAccountRequest struct {
 
 // AccountService 账号管理服务
 type AccountService struct {
-	accountRepo AccountRepository
-	groupRepo   GroupRepository
+	accountRepo    AccountRepository
+	groupRepo      GroupRepository
+	accountTestSvc *AccountTestService // 用于凭证验证（凭证预警依赖此功能）
 }
 
 type groupExistenceBatchChecker interface {
@@ -133,10 +134,12 @@ type groupExistenceBatchChecker interface {
 }
 
 // NewAccountService 创建账号服务实例
-func NewAccountService(accountRepo AccountRepository, groupRepo GroupRepository) *AccountService {
+// accountTestSvc 可选，用于 TestCredentials 功能（凭证预警依赖此功能）
+func NewAccountService(accountRepo AccountRepository, groupRepo GroupRepository, accountTestSvc *AccountTestService) *AccountService {
 	return &AccountService{
-		accountRepo: accountRepo,
-		groupRepo:   groupRepo,
+		accountRepo:    accountRepo,
+		groupRepo:      groupRepo,
+		accountTestSvc: accountTestSvc,
 	}
 }
 
@@ -375,25 +378,31 @@ func (s *AccountService) GetCredential(ctx context.Context, id int64, key string
 	return account.GetCredential(key), nil
 }
 
-// TestCredentials 测试账号凭证是否有效（需要实现具体平台的测试逻辑）
+// TestCredentials tests account credentials validity.
+// Returns ErrNotImplemented as the credential testing feature is not yet implemented.
+// TestCredentials 验证账号凭证有效性
+// 凭证预警功能依赖此方法
 func (s *AccountService) TestCredentials(ctx context.Context, id int64) error {
+	if s.accountTestSvc == nil {
+		return infraerrors.NotImplemented("TEST_CREDENTIALS_NOT_CONFIGURED", "account test service not configured")
+	}
+
 	account, err := s.accountRepo.GetByID(ctx, id)
 	if err != nil {
 		return fmt.Errorf("get account: %w", err)
 	}
 
-	// 根据平台执行不同的测试逻辑
-	switch account.Platform {
-	case PlatformAnthropic:
-		// TODO: 测试Anthropic API凭证
-		return nil
-	case PlatformOpenAI:
-		// TODO: 测试OpenAI API凭证
-		return nil
-	case PlatformGemini:
-		// TODO: 测试Gemini API凭证
-		return nil
-	default:
-		return fmt.Errorf("unsupported platform: %s", account.Platform)
+	_ = account // Account retrieved for logging purposes
+
+	// 调用 AccountTestService.RunTestBackground 执行凭证验证
+	result, err := s.accountTestSvc.RunTestBackground(ctx, id, "")
+	if err != nil {
+		return fmt.Errorf("credential test failed: %w", err)
 	}
+
+	if result.Status != "success" {
+		return fmt.Errorf("credential invalid: %s", result.ErrorMessage)
+	}
+
+	return nil
 }
