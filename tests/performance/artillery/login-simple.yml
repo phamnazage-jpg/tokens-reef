@@ -1,0 +1,26 @@
+config:
+  target: "http://localhost:8080"
+  phases:
+    - duration: 10
+      arrivalRate: 10
+      name: "Warm up"
+    - duration: 20
+      arrivalRate: 30
+      name: "Load test"
+  processor: null
+
+scenarios:
+  - name: "User Login"
+    flow:
+      - post:
+          url: "/api/v1/auth/login"
+          json:
+            email: "lon22@qq.com"
+            password: "admin123"
+          capture:
+            - json: "$.token"
+              as: "auth_token"
+      - get:
+          url: "/api/v1/user/info"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"

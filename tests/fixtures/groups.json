@@ -1,0 +1,22 @@
+{
+  "groups": [
+    {
+      "id": "test-group-1",
+      "name": "Default Group",
+      "description": "Default group for new accounts",
+      "priority": 1
+    },
+    {
+      "id": "test-group-2",
+      "name": "Premium Group",
+      "description": "High priority group for premium users",
+      "priority": 10
+    },
+    {
+      "id": "test-group-3",
+      "name": "Backup Group",
+      "description": "Backup group for failover",
+      "priority": 0
+    }
+  ]
+}

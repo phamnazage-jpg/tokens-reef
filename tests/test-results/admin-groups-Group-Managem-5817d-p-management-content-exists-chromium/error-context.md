@@ -1,0 +1,43 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - img "Logo" [ref=e8]
+    - heading "Sub2API" [level=1] [ref=e9]
+    - paragraph [ref=e10]: Subscription to API Conversion Platform
+  - generic [ref=e12]:
+    - generic [ref=e13]:
+      - heading "Welcome Back" [level=2] [ref=e14]
+      - paragraph [ref=e15]: Sign in to your account to continue
+    - generic [ref=e16]:
+      - generic [ref=e17]:
+        - generic [ref=e18]: Email
+        - generic [ref=e19]:
+          - generic:
+            - img
+          - textbox "Email" [ref=e20]:
+            - /placeholder: Enter your email
+            - text: lon22@qq.com
+      - generic [ref=e21]:
+        - generic [ref=e22]: Password
+        - generic [ref=e23]:
+          - generic:
+            - img
+          - textbox "Password" [ref=e24]:
+            - /placeholder: Enter your password
+            - text: admin123
+          - button [ref=e25] [cursor=pointer]:
+            - img [ref=e26]
+      - generic [ref=e29]:
+        - img [ref=e31]
+        - paragraph [ref=e33]: Too many requests, please try again later
+      - button "Sign In" [ref=e34] [cursor=pointer]:
+        - img [ref=e35]
+        - text: Sign In
+  - paragraph [ref=e38]:
+    - text: Don't have an account?
+    - link "Sign up" [ref=e39] [cursor=pointer]:
+      - /url: /register
+  - generic [ref=e40]: © 2026 Sub2API. All rights reserved.
+```

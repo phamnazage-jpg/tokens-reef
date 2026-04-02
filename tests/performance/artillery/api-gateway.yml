@@ -1,0 +1,49 @@
+config:
+  target: "http://localhost:8080"
+  phases:
+    - duration: 30
+      arrivalRate: 10
+      name: "Warm up"
+    - duration: 60
+      arrivalRate: 50
+      name: "Load test - 50 concurrent"
+    - duration: 60
+      arrivalRate: 100
+      name: "Load test - 100 concurrent"
+    - duration: 60
+      arrivalRate: 200
+      name: "Stress test"
+  plugins:
+    expect: {}
+  processor: "./processors.js"
+
+scenarios:
+  - name: "Chat Completions (Non-streaming)"
+    flow:
+      - post:
+          url: "/v1/chat/completions"
+          headers:
+            Authorization: "Bearer {{ $processEnvironment.API_KEY }}"
+            Content-Type: "application/json"
+          json:
+            model: "gpt-4"
+            messages:
+              - role: "user"
+                content: "Hello, how are you?"
+            max_tokens: 100
+            stream: false
+
+  - name: "Chat Completions (Streaming)"
+    weight: 3
+    flow:
+      - post:
+          url: "/v1/chat/completions"
+          headers:
+            Authorization: "Bearer {{ $processEnvironment.API_KEY }}"
+            Content-Type: "application/json"
+          json:
+            model: "gpt-4"
+            messages:
+              - role: "user"
+                content: "Count from 1 to 10"
+            stream: true

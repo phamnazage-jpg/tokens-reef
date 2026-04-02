@@ -1,0 +1,24 @@
+config:
+  target: "http://localhost:8080"
+  phases:
+    - duration: 10
+      arrivalRate: 10
+      name: "Warm up"
+    - duration: 20
+      arrivalRate: 30
+      name: "Load test"
+
+scenarios:
+  - name: "Static Assets"
+    weight: 5
+    flow:
+      - get:
+          url: "/"
+      - get:
+          url: "/login"
+
+  - name: "API Health"
+    weight: 2
+    flow:
+      - get:
+          url: "/api/v1/public/settings"

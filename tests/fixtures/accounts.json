@@ -1,0 +1,31 @@
+{
+  "accounts": [
+    {
+      "id": "test-account-1",
+      "provider": "openai",
+      "email": "test-openai@example.com",
+      "status": "active",
+      "description": "Test OpenAI account"
+    },
+    {
+      "id": "test-account-2",
+      "provider": "anthropic",
+      "email": "test-anthropic@example.com",
+      "status": "active",
+      "description": "Test Anthropic account"
+    },
+    {
+      "id": "test-account-3",
+      "provider": "google",
+      "email": "test-google@example.com",
+      "status": "inactive",
+      "description": "Test Google account (inactive)"
+    }
+  ],
+  "providers": [
+    "openai",
+    "anthropic",
+    "google",
+    "azure"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "apiKeys": [
+    {
+      "prefix": "sk-test-",
+      "description": "Test API key",
+      "rateLimit": 60,
+      "concurrency": 5
+    },
+    {
+      "prefix": "sk-prod-",
+      "description": "Production API key",
+      "rateLimit": 600,
+      "concurrency": 50
+    }
+  ],
+  "testKey": {
+    "prefix": "sk-test-key-",
+    "format": "sk-{random}"
+  }
+}

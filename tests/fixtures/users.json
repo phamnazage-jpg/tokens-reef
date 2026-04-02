@@ -1,0 +1,26 @@
+{
+  "users": [
+    {
+      "email": "lon22@qq.com",
+      "password": "admin123",
+      "role": "admin",
+      "description": "Primary test admin user"
+    },
+    {
+      "email": "testuser@example.com",
+      "password": "testpass123",
+      "role": "user",
+      "description": "Regular test user"
+    },
+    {
+      "email": "readonly@example.com",
+      "password": "readonly123",
+      "role": "readonly",
+      "description": "Read-only test user"
+    }
+  ],
+  "admin": {
+    "email": "lon22@qq.com",
+    "password": "admin123"
+  }
+}

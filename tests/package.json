@@ -1,0 +1,33 @@
+{
+  "name": "sub2api-tests",
+  "version": "1.0.0",
+  "description": "Sub2API comprehensive test suite",
+  "private": true,
+  "scripts": {
+    "test": "run-p test:unit test:integration test:e2e",
+    "test:unit": "cd ../backend && go test -short ./...",
+    "test:unit:verbose": "cd ../backend && go test -v -short ./...",
+    "test:unit:coverage": "cd ../backend && go test -cover ./...",
+    "test:integration": "cd ../frontend && pnpm test -- --run",
+    "test:e2e": "cd e2e && playwright test",
+    "test:e2e:headed": "cd e2e && playwright test --headed",
+    "test:e2e:ui": "cd e2e && playwright test --ui",
+    "test:e2e:debug": "cd e2e && playwright test --debug",
+    "test:all": "run-p test:unit test:integration test:e2e",
+    "test:ci": "run-p test:unit test:integration",
+    "test:report": "node scripts/generate-report.js",
+    "test:watch": "cd ../frontend && pnpm test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  },
+  "keywords": [
+    "sub2api",
+    "testing",
+    "e2e",
+    "playwright"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
