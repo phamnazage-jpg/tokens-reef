@@ -3,7 +3,7 @@ import { flushPromises, mount } from '@vue/test-utils'
 
 import UsageView from '../UsageView.vue'
 
-const { list, getStats, getSnapshotV2, getById } = vi.hoisted(() => {
+const { list, getStats, getSnapshotV2, getById, getModelStats } = vi.hoisted(() => {
   vi.stubGlobal('localStorage', {
     getItem: vi.fn(() => null),
     setItem: vi.fn(),
@@ -15,6 +15,7 @@ const { list, getStats, getSnapshotV2, getById } = vi.hoisted(() => {
     getStats: vi.fn(),
     getSnapshotV2: vi.fn(),
     getById: vi.fn(),
+    getModelStats: vi.fn(),
   }
 })
 
@@ -40,6 +41,7 @@ vi.mock('@/api/admin', () => ({
     },
     dashboard: {
       getSnapshotV2,
+      getModelStats,
     },
     users: {
       getById,
