@@ -8,6 +8,8 @@
 |------|------|
 | **上游仓库** | Wei-Shaw/sub2api |
 | **Fork 仓库** | bayma888/sub2api-bmai |
+| **代码质量修复仓库** | tokens-reef (https://github.com/phamnazage-jpg/tokens-reef) |
+| **Gitea 仓库** | https://www.tksea.top/pham/tokensea (字节海洋) |
 | **技术栈** | Go 后端 (Ent ORM + Gin) + Vue3 前端 (pnpm) |
 | **数据库** | PostgreSQL 16 + Redis |
 | **包管理** | 后端: go modules, 前端: **pnpm**（不是 npm） |
@@ -242,6 +244,72 @@ git add ent/       # 生成的文件也要提交
 - [ ] `pnpm-lock.yaml` 已同步（如果改了 package.json）
 - [ ] 所有 test stub 补全新接口方法（如果改了 interface）
 - [ ] Ent 生成的代码已提交（如果改了 schema）
+
+---
+
+### 坑 12：E2E 测试 API 路径必须与后端路由一致
+
+**问题**：E2E 测试调用 `/api/v1/keys` 但后端路由是 `/api/v1/api-keys`，导致所有 API Key 测试返回 404。
+
+**原因**：测试文件使用了与后端路由不匹配的 API 路径。
+
+**后端路由**（`backend/internal/server/routes/user.go`）：
+```go
+keys := authenticated.Group("/api-keys")  // 注意是 api-keys，不是 keys
+```
+
+**解决**：
+```bash
+# 将所有 /api/v1/keys 改为 /api/v1/api-keys
+sed -i 's|/api/v1/keys|/api/v1/api-keys|g' tests/e2e/*.spec.ts
+```
+
+---
+
+### 坑 13：E2E 测试 Payload 必须与后端 DTO 一致
+
+**问题**：测试使用的 Payload 与后端定义的 struct 不匹配，导致 400 错误。
+
+**常见错误**：
+
+| 功能 | 错误 Payload | 正确 Payload |
+|------|-------------|-------------|
+| 余额调整 | `{amount, reason}` | `{balance, operation, notes}` |
+| Rate Multiplier | `[{model, multiplier}]` | `{entries: [{user_id, rate_multiplier}]}` |
+
+**验证方法**：
+```bash
+# 查看后端 handler 中的 struct 定义
+grep -A 10 "type.*Request struct" backend/internal/handler/admin/*.go
+```
+
+---
+
+### 坑 14：E2E 测试被 .gitignore 忽略
+
+**问题**：`tests` 目录在 `.gitignore` 中，修改测试文件后无法直接 `git add`。
+
+**解决**：
+```bash
+# 使用 -f 强制添加
+git add -f tests/
+git commit -m "fix: update E2E test API paths and payloads"
+```
+
+---
+
+### 坑 15：Wire 依赖注入修改后需重新生成
+
+**问题**：修改 `handler/wire.go` 后 Wire 生成失败。
+
+**解决**：
+```bash
+cd backend
+# 先运行 go mod tidy 确保依赖完整
+go mod tidy
+# 然后手动检查 wire_gen.go 是否正确更新
+# Wire 自动生成的代码通常在 cmd/server/wire_gen.go
+```
 
 ## 五、常用命令速查
 
