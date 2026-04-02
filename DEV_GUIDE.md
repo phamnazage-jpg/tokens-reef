@@ -249,19 +249,19 @@ git add ent/       # 生成的文件也要提交
 
 ### 坑 12：E2E 测试 API 路径必须与后端路由一致
 
-**问题**：E2E 测试调用 `/api/v1/keys` 但后端路由是 `/api/v1/api-keys`，导致所有 API Key 测试返回 404。
+**问题**：测试调用 `/api/v1/api-keys` 但后端路由是 `/api/v1/keys`，导致所有 API Key 测试返回 404。
 
-**原因**：测试文件使用了与后端路由不匹配的 API 路径。
+**原因**：后端路由是 `/api/v1/keys`（不是 `/api/v1/api-keys`）。
 
 **后端路由**（`backend/internal/server/routes/user.go`）：
 ```go
-keys := authenticated.Group("/api-keys")  // 注意是 api-keys，不是 keys
+keys := authenticated.Group("/keys")  // 用户端点是 /keys
 ```
 
 **解决**：
 ```bash
-# 将所有 /api/v1/keys 改为 /api/v1/api-keys
-sed -i 's|/api/v1/keys|/api/v1/api-keys|g' tests/e2e/*.spec.ts
+# 将所有 /api/v1/api-keys 改为 /api/v1/keys（用户端点）
+sed -i 's|/api/v1/api-keys|/api/v1/keys|g' tests/e2e/*.spec.ts
 ```
 
 ---

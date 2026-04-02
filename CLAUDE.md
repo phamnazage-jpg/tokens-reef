@@ -157,7 +157,7 @@ go generate ./cmd/server
    - Logger 测试因 zap Fsync() 超时，使用 `-skip "logger"` 跳过
 
 2. **E2E 测试坑点**：
-   - API Key 路由是 `/api/v1/api-keys`（不是 `/api/v1/keys`）
+   - API Key 路由是 `/api/v1/keys`（用户端）/admin 是 `/api/v1/admin/api-keys`
    - 余额调整 Payload：`{balance, operation, notes}`
    - Rate Multiplier Payload：`{entries: [{user_id, rate_multiplier}]}`
    - tests 目录在 .gitignore 中，需用 `git add -f tests/` 强制添加
@@ -165,6 +165,14 @@ go generate ./cmd/server
 3. **依赖注入**：
    - 使用 Google Wire 进行依赖注入
    - 修改 wire.go 后运行 `go mod tidy` 确保依赖完整
+
+4. **前端测试覆盖**：
+   - `src/views/auth/` 测试覆盖率为 0%
+   - `src/views/user/` 测试覆盖率约 20%
+   - 建议优先补充 auth 登录相关测试
+
+5. **代码注释一致性**：
+   - api_key_handler.go 注释已更新为正确路由 `/api/v1/keys`
 
 ### Gitea 远程仓库
 

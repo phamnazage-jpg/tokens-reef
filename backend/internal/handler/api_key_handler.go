@@ -63,7 +63,7 @@ type UpdateAPIKeyRequest struct {
 }
 
 // List handles listing user's API keys with pagination
-// GET /api/v1/api-keys
+// GET /api/v1/keys
 func (h *APIKeyHandler) List(c *gin.Context) {
 	subject, ok := middleware2.GetAuthSubjectFromContext(c)
 	if !ok {
@@ -104,7 +104,7 @@ func (h *APIKeyHandler) List(c *gin.Context) {
 }
 
 // GetByID handles getting a single API key
-// GET /api/v1/api-keys/:id
+// GET /api/v1/keys/:id
 func (h *APIKeyHandler) GetByID(c *gin.Context) {
 	subject, ok := middleware2.GetAuthSubjectFromContext(c)
 	if !ok {
@@ -134,7 +134,7 @@ func (h *APIKeyHandler) GetByID(c *gin.Context) {
 }
 
 // Create handles creating a new API key
-// POST /api/v1/api-keys
+// POST /api/v1/keys
 func (h *APIKeyHandler) Create(c *gin.Context) {
 	subject, ok := middleware2.GetAuthSubjectFromContext(c)
 	if !ok {
@@ -179,7 +179,7 @@ func (h *APIKeyHandler) Create(c *gin.Context) {
 }
 
 // Update handles updating an API key
-// PUT /api/v1/api-keys/:id
+// PUT /api/v1/keys/:id
 func (h *APIKeyHandler) Update(c *gin.Context) {
 	subject, ok := middleware2.GetAuthSubjectFromContext(c)
 	if !ok {
@@ -242,7 +242,7 @@ func (h *APIKeyHandler) Update(c *gin.Context) {
 }
 
 // Delete handles deleting an API key
-// DELETE /api/v1/api-keys/:id
+// DELETE /api/v1/keys/:id
 func (h *APIKeyHandler) Delete(c *gin.Context) {
 	subject, ok := middleware2.GetAuthSubjectFromContext(c)
 	if !ok {
