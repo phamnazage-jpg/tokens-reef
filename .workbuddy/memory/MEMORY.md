@@ -1,5 +1,19 @@
 # Sub2API 项目长期记忆
 
+## 重要发现（2026-04-03）
+
+**API Key 用户端路由确认**：
+- 实际路由为 `/api/v1/keys`（routes/user.go:42，`/api/v1` 前缀 + `/keys` 路由组）
+- E2E 测试之前被错误地改为 `/api/v1/api-keys`，工作区已更正为正确路径
+- 契约测试（api_contract_test.go）使用正确路径
+
+**P0-04 发现与修复（2026-04-03 10:50）**：
+- `TestGroupHandlerEndpoints` nil pointer panic（group_handler.go:384），原因：P1-03 GetStats 重构后 `usageLogRepo` 在测试 `setupAdminRouter()` 中传 nil
+- 修复：`admin_service_stub_test.go` 添加完整 `stubUsageLogRepository`（实现 `service.UsageLogRepository` 全部方法）；`admin_basic_handlers_test.go:20` 传入 `&stubUsageLogRepository{}`
+- 已修复，测试从 FAIL(panic) → PASS(0.355s)
+
+## 代码审查历史
+
 ## 项目基本信息
 
 - **仓库路径**：`d:/project/sub2api`

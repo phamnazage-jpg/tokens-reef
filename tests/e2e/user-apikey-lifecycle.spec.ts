@@ -44,10 +44,10 @@ function uniqueName(prefix: string) {
  * Returns the created key object.
  */
 async function createApiKeyViaApi(page: Page, name: string): Promise<ApiKeyResponse> {
-  const response = await page.request.post('/api/v1/api-keys', {
+  const response = await page.request.post('/api/v1/keys', {
     data: { name, group_id: null },
   });
-  expect(response.status(), `POST /api/v1/api-keys should return 200 or 201, got ${response.status()}`).toBeLessThanOrEqual(201);
+  expect(response.status(), `POST /api/v1/keys should return 200 or 201, got ${response.status()}`).toBeLessThanOrEqual(201);
   const body = await response.json() as ApiResponse<ApiKeyResponse>;
   const key = body.data ?? (body as unknown as ApiKeyResponse);
   expect(key.id, 'Created API key should have a numeric id').toBeGreaterThan(0);
@@ -57,7 +57,7 @@ async function createApiKeyViaApi(page: Page, name: string): Promise<ApiKeyRespo
 
 /** Delete an API key via the REST API (cleanup helper). */
 async function deleteApiKeyViaApi(page: Page, id: number) {
-  const response = await page.request.delete(`/api/v1/api-keys/${id}`);
+  const response = await page.request.delete(`/api/v1/keys/${id}`);
   // 200 or 204 are both acceptable
   expect(response.status()).toBeGreaterThanOrEqual(200);
   expect(response.status()).toBeLessThanOrEqual(204);
@@ -72,12 +72,12 @@ test.describe('API Key — REST API lifecycle', () => {
   test.afterAll(async ({ request }) => {
     // Clean up: delete the key if it was created
     if (createdKeyId) {
-      await request.delete(`/api/v1/api-keys/${createdKeyId}`).catch(() => {});
+      await request.delete(`/api/v1/keys/${createdKeyId}`).catch(() => {});
     }
   });
 
-  test('POST /api/v1/api-keys creates a key with correct schema', async ({ page }) => {
-    const response = await page.request.post('/api/v1/api-keys', {
+  test('POST /api/v1/keys creates a key with correct schema', async ({ page }) => {
+    const response = await page.request.post('/api/v1/keys', {
       data: { name: keyName },
     });
 
@@ -98,11 +98,11 @@ test.describe('API Key — REST API lifecycle', () => {
     createdKeyId = key.id;
   });
 
-  test('GET /api/v1/api-keys list includes the newly created key', async ({ page }) => {
+  test('GET /api/v1/keys list includes the newly created key', async ({ page }) => {
     // Ensure previous test ran (depends on createdKeyId)
     test.skip(createdKeyId === 0, 'Skipping: previous create test did not run');
 
-    const response = await page.request.get('/api/v1/api-keys');
+    const response = await page.request.get('/api/v1/keys');
     expect(response.status()).toBe(200);
     const body = await response.json();
     const keys: ApiKeyResponse[] = Array.isArray(body) ? body : (body.data ?? []);
@@ -112,10 +112,10 @@ test.describe('API Key — REST API lifecycle', () => {
     expect(found!.name).toBe(keyName);
   });
 
-  test('GET /api/v1/api-keys/:id returns the specific key', async ({ page }) => {
+  test('GET /api/v1/keys/:id returns the specific key', async ({ page }) => {
     test.skip(createdKeyId === 0, 'Skipping: depends on create test');
 
-    const response = await page.request.get(`/api/v1/api-keys/${createdKeyId}`);
+    const response = await page.request.get(`/api/v1/keys/${createdKeyId}`);
     expect(response.status()).toBe(200);
     const body = await response.json();
     const key: ApiKeyResponse = body.data ?? body;
@@ -123,11 +123,11 @@ test.describe('API Key — REST API lifecycle', () => {
     expect(key.name).toBe(keyName);
   });
 
-  test('PUT /api/v1/api-keys/:id renames the key', async ({ page }) => {
+  test('PUT /api/v1/keys/:id renames the key', async ({ page }) => {
     test.skip(createdKeyId === 0, 'Skipping: depends on create test');
 
     const newName = keyName + '-renamed';
-    const response = await page.request.put(`/api/v1/api-keys/${createdKeyId}`, {
+    const response = await page.request.put(`/api/v1/keys/${createdKeyId}`, {
       data: { name: newName },
     });
     expect(response.status()).toBe(200);
@@ -137,16 +137,16 @@ test.describe('API Key — REST API lifecycle', () => {
     expect(key.name, 'Key name should be updated').toBe(newName);
 
     // Verify via GET
-    const getResp = await page.request.get(`/api/v1/api-keys/${createdKeyId}`);
+    const getResp = await page.request.get(`/api/v1/keys/${createdKeyId}`);
     const getBody = await getResp.json();
     const fetched: ApiKeyResponse = getBody.data ?? getBody;
     expect(fetched.name).toBe(newName);
   });
 
-  test('PUT /api/v1/api-keys/:id can disable (set status=inactive)', async ({ page }) => {
+  test('PUT /api/v1/keys/:id can disable (set status=inactive)', async ({ page }) => {
     test.skip(createdKeyId === 0, 'Skipping: depends on create test');
 
-    const response = await page.request.put(`/api/v1/api-keys/${createdKeyId}`, {
+    const response = await page.request.put(`/api/v1/keys/${createdKeyId}`, {
       data: { status: 'inactive' },
     });
     expect(response.status()).toBe(200);
@@ -156,10 +156,10 @@ test.describe('API Key — REST API lifecycle', () => {
     expect(key.status).toBe('inactive');
   });
 
-  test('PUT /api/v1/api-keys/:id can re-enable (set status=active)', async ({ page }) => {
+  test('PUT /api/v1/keys/:id can re-enable (set status=active)', async ({ page }) => {
     test.skip(createdKeyId === 0, 'Skipping: depends on create test');
 
-    const response = await page.request.put(`/api/v1/api-keys/${createdKeyId}`, {
+    const response = await page.request.put(`/api/v1/keys/${createdKeyId}`, {
       data: { status: 'active' },
     });
     expect(response.status()).toBe(200);
@@ -168,15 +168,15 @@ test.describe('API Key — REST API lifecycle', () => {
     expect(key.status).toBe('active');
   });
 
-  test('DELETE /api/v1/api-keys/:id removes the key', async ({ page }) => {
+  test('DELETE /api/v1/keys/:id removes the key', async ({ page }) => {
     test.skip(createdKeyId === 0, 'Skipping: depends on create test');
 
-    const response = await page.request.delete(`/api/v1/api-keys/${createdKeyId}`);
+    const response = await page.request.delete(`/api/v1/keys/${createdKeyId}`);
     expect(response.status()).toBeGreaterThanOrEqual(200);
     expect(response.status()).toBeLessThanOrEqual(204);
 
     // Verify it no longer appears in the list
-    const listResp = await page.request.get('/api/v1/api-keys');
+    const listResp = await page.request.get('/api/v1/keys');
     const body = await listResp.json();
     const keys: ApiKeyResponse[] = Array.isArray(body) ? body : (body.data ?? []);
     const found = keys.find((k) => k.id === createdKeyId);
@@ -226,7 +226,7 @@ test.describe('API Key — UI interactions (/keys page)', () => {
   test('API key list response contains expected fields', async ({ page }) => {
     let listBody: unknown = null;
 
-    await page.route('**/api/v1/api-keys*', async (route) => {
+    await page.route('**/api/v1/keys*', async (route) => {
       const response = await route.fetch();
       listBody = await response.json().catch(() => null);
       await route.fulfill({ response });
@@ -251,7 +251,7 @@ test.describe('API Key — UI interactions (/keys page)', () => {
 
 test.describe('API Key — error and validation', () => {
   test('creating a key with an empty name returns 4xx', async ({ page }) => {
-    const response = await page.request.post('/api/v1/api-keys', {
+    const response = await page.request.post('/api/v1/keys', {
       data: { name: '' },
     });
     expect(
@@ -262,12 +262,12 @@ test.describe('API Key — error and validation', () => {
   });
 
   test('fetching a non-existent key returns 404', async ({ page }) => {
-    const response = await page.request.get('/api/v1/api-keys/9999999');
+    const response = await page.request.get('/api/v1/keys/9999999');
     expect(response.status()).toBe(404);
   });
 
   test('deleting a non-existent key returns 404', async ({ page }) => {
-    const response = await page.request.delete('/api/v1/api-keys/9999999');
+    const response = await page.request.delete('/api/v1/keys/9999999');
     expect(response.status()).toBe(404);
   });
 });

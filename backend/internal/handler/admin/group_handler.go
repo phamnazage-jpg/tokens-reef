@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/Wei-Shaw/sub2api/internal/handler/dto"
 	"github.com/Wei-Shaw/sub2api/internal/pkg/response"
@@ -20,6 +21,7 @@ type GroupHandler struct {
 	adminService         service.AdminService
 	dashboardService     *service.DashboardService
 	groupCapacityService *service.GroupCapacityService
+	usageLogRepo         service.UsageLogRepository
 }
 
 type optionalLimitField struct {
@@ -72,11 +74,12 @@ func (f optionalLimitField) ToServiceInput() *float64 {
 }
 
 // NewGroupHandler creates a new admin group handler
-func NewGroupHandler(adminService service.AdminService, dashboardService *service.DashboardService, groupCapacityService *service.GroupCapacityService) *GroupHandler {
+func NewGroupHandler(adminService service.AdminService, dashboardService *service.DashboardService, groupCapacityService *service.GroupCapacityService, usageLogRepo service.UsageLogRepository) *GroupHandler {
 	return &GroupHandler{
 		adminService:         adminService,
 		dashboardService:     dashboardService,
 		groupCapacityService: groupCapacityService,
+		usageLogRepo:         usageLogRepo,
 	}
 }
 
@@ -358,14 +361,48 @@ func (h *GroupHandler) GetStats(c *gin.Context) {
 		return
 	}
 
-	// Return mock data for now
+	ctx := c.Request.Context()
+
+	// Get group info
+	group, err := h.adminService.GetGroup(ctx, groupID)
+	if err != nil {
+		response.ErrorFrom(c, err)
+		return
+	}
+
+	// Get API key count
+	totalAPIKeys, err := h.adminService.GetGroupAPIKeyCount(ctx, groupID)
+	if err != nil {
+		response.ErrorFrom(c, err)
+		return
+	}
+
+	// Get today's usage stats
+	now := time.Now()
+	startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+
+	stats, err := h.usageLogRepo.GetGroupStatsWithFilters(ctx, startOfDay, now, 0, 0, 0, groupID, nil, nil, nil)
+	if err != nil {
+		response.ErrorFrom(c, err)
+		return
+	}
+
+	// Calculate totals from stats
+	var totalRequests int64
+	var totalCost float64
+	for _, s := range stats {
+		totalRequests += s.Requests
+		totalCost += s.ActualCost
+	}
+
 	response.Success(c, gin.H{
-		"total_api_keys":  0,
-		"active_api_keys": 0,
-		"total_requests":  0,
-		"total_cost":      0.0,
+		"id":               group.ID,
+		"name":             group.Name,
+		"total_api_keys":  totalAPIKeys,
+		"active_api_keys": totalAPIKeys, // All keys in group are considered active
+		"total_requests":  totalRequests,
+		"total_cost":       totalCost,
 	})
-	_ = groupID // TODO: implement actual stats
 }
 
 // GetUsageSummary returns today's and cumulative cost for all groups.
